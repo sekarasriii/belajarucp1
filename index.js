@@ -38,3 +38,35 @@ const express = require('express');
         }
     });
 
+    // UPDATE - Update produk by ID
+    app.put("/produk/:id", async(req, res) => {
+        const id = req.params.id;
+        const data = req.body;
+
+        try {
+            const produk = await db.Produk.findByPk(id);
+            if (!produk) {
+                return res.status(404).send({message: "Produk tidak ditemukan"});
+            }
+            await produk.update(data);
+            res.send({message: "Produk berhasil diupdate", produk});
+        } catch(err) {
+            res.status(500).send(err);
+        }
+    });
+
+    // DELETE - Hapus produk by ID
+    app.delete("/produk/:id", async(req, res) => {
+        const id = req.params.id;
+
+        try {
+            const produk = await db.Produk.findByPk(id);
+            if (!produk) {
+                return res.status(404).send({message: "Produk tidak ditemukan"});
+            }
+            await produk.destroy();
+            res.send({message: "Produk berhasil dihapus"});
+        } catch(err) {
+            res.status(500).send(err);
+        }
+    });
